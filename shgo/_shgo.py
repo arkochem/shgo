@@ -590,7 +590,7 @@ class SHGO(object):
             'cg': ['jac'],
             'bfgs': ['jac'],
             'newton-cg': ['jac', 'hess', 'hessp'],
-            'l-bfgs-b': ['jac', 'bounds'],
+            'l-bfgs-b': ['jac', 'bounds', 'maxfun', 'maxiter'],
             'tnc': ['jac', 'bounds'],
             'cobyla': ['constraints'],
             'slsqp': ['jac', 'bounds', 'constraints'],
