@@ -257,8 +257,6 @@ class VertexCacheField(VertexCacheBase):
                 self.process_fpool = self.proc_fpool_g
         else:
             self.workers = workers
-            self.pool = mp.Pool(processes=workers)  #TODO: Move this pool to
-                                                    # the complex object
             self.process_gpool = self.pproc_gpool
             if g_cons == None:
                 self.process_fpool = self.pproc_fpool_nog
@@ -334,7 +332,8 @@ class VertexCacheField(VertexCacheBase):
         for v in self.gpool:
             gpool_l.append(v.x_a)
 
-        G = self.pool.map(self.wgcons.gcons, gpool_l)
+        with mp.Pool(processes=self.workers) as pool:
+            G = pool.map(self.wgcons.gcons, gpool_l)
         for v, g in zip(self.gpool, G):
             v.feasible = g  # set vertex object attribute v.feasible = g (bool)
 
@@ -373,7 +372,8 @@ class VertexCacheField(VertexCacheBase):
                 fpool_l.append(v.x_a)
             else:
                 v.f = np.inf
-        F = self.pool.map(self.wfield.func, fpool_l)
+        with mp.Pool(processes=self.workers) as pool:
+            F = pool.map(self.wfield.func, fpool_l)
         for va, f in zip(fpool_l, F):
             vt = tuple(va)
             self[vt].f = f  # set vertex object attribute v.f = f
@@ -391,7 +391,8 @@ class VertexCacheField(VertexCacheBase):
         fpool_l = []
         for v in self.fpool:
             fpool_l.append(v.x_a)
-        F = self.pool.map(self.wfield.func, fpool_l)
+        with mp.Pool(processes=self.workers) as pool:
+            F = pool.map(self.wfield.func, fpool_l)
         for va, f in zip(fpool_l, F):
             vt = tuple(va)
             self[vt].f = f  # set vertex object attribute v.f = f
